@@ -1,0 +1,11 @@
+node_modules/
+.idea/
+.DS_Store
+*npm-debug.log
+data
+tmp
+packages/
+coverage/
+downloads/
+installs/
+bootstrap.json
