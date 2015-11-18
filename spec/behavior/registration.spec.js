@@ -26,7 +26,7 @@ var nock = require( "nock" );
 describe( "Registration", function() {
 	describe( "when registering with index", function() {
 		describe( "without initial connectivity", function() {
-			var api, registration, register;
+			var api, registration, register, hookCreate;
 			before( function( done ) {
 				api = registerFn( config );
 				register = api.register();
@@ -44,6 +44,21 @@ describe( "Registration", function() {
 						}, {
 							"content-type": "application/json"
 						} );
+				hookCreate = nock( "http://localhost:4444" )
+						.post( "/hook/test-host%3A9090" )
+						.reply( 201, {
+							_origin: {
+								href: "/nonstop/host",
+								method: "post"
+							},
+							_links: {},
+							status: 201,
+							id: "test-host:9090",
+							message: "Webhook test-host added successfully"
+						}, {
+							"content-type": "application/json"
+						} );
+
 				setTimeout( function() {
 					done();
 				}, 5 );
@@ -80,6 +95,7 @@ describe( "Registration", function() {
 				it( "should make expected HTTP calls", function() {
 					options.isDone();
 					registration.isDone();
+					hookCreate.isDone();
 				} );
 
 				it( "should resolve to the server response", function() {
@@ -122,7 +138,8 @@ describe( "Registration", function() {
 						id: "test-host:9090",
 						url: "http://192.168.1.100:9090/api/package",
 						method: "POST",
-						headers: {}
+						headers: {},
+						events: [ "package.#" ]
 					} )
 					.reply( 201, {
 						_origin: {

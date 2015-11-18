@@ -1,6 +1,6 @@
 {
   "name": "nonstop-host",
-  "version": "1.0.0-5",
+  "version": "1.0.0-8",
   "description": "A self-updating service host",
   "main": "src/index.js",
   "bin": {
@@ -48,14 +48,14 @@
     "when": "^3.4.5"
   },
   "dependencies": {
-    "autohost": "~0.4.0",
+    "autohost": "~0.5.0",
     "configya": "~0.2.0",
     "debug": "^2.0.0",
-    "drudgeon": "~0.1.0",
+    "drudgeon": "~0.2.0",
     "fount": "^0.1.0",
     "globulesce": "~0.1.4",
-    "halon": "^0.3.2",
-    "hyped": "^0.2.3",
+    "halon": "~0.4.0",
+    "hyped": "~0.5.0",
     "js-yaml": "^3.2.3",
     "lodash": "^2.4.1",
     "machina": "^0.4.0-1",

@@ -26,6 +26,14 @@ function emitter() {
 	};
 }
 
+var info = {
+	owner: "me",
+	project: "test",
+	branch: "master",
+	version: "0.1.0",
+	slug: "a1b2c3d4"
+};
+
 describe( "Observer", function() {
 	describe( "with subscriptions", function() {
 		var control = emitter();
@@ -54,10 +62,12 @@ describe( "Observer", function() {
 						"checkingForNew",
 						"checkComplete",
 						"checkFailed",
+						"configured",
 						"initializing",
 						"loading",
 						"prebooting",
 						"preboot.error",
+						"reconfigured",
 						"running",
 						"running.error",
 						"starting",
@@ -249,7 +259,17 @@ describe( "Observer", function() {
 				} );
 
 				it( "should update status last event", function() {
-					status.lastEvent.should.eql( { failed: { download: "0.0.test" } } );
+					status.lastEvent.should.eql( {
+						failed: {
+							download: {
+								error: {
+									badThing: "some error"
+								},
+								file: "test.tar.gz",
+								version: "0.0.test"
+							}
+						}
+					} );
 				} );
 
 				it( "should log error", function() {
@@ -266,11 +286,11 @@ describe( "Observer", function() {
 
 			describe( "on hosted crashed", function() {
 				before( function() {
-					processhost.emit( "hosted.crashed", { sad: ":(" } );
+					processhost.emit( "hosted.crashed", info );
 				} );
 
 				it( "should update status last event", function() {
-					status.lastEvent.should.eql( { crashed: { sad: ":(" } } );
+					status.lastEvent.should.eql( { crashed: info } );
 				} );
 
 				it( "should record stop", function() {
@@ -279,7 +299,7 @@ describe( "Observer", function() {
 
 				it( "should log warning", function() {
 					log.entries.warn.should.eql( [
-						"Service crashed: {\"sad\":\":(\"}"
+						"Service crashed: {\"owner\":\"me\",\"project\":\"test\",\"branch\":\"master\",\"version\":\"0.1.0\",\"slug\":\"a1b2c3d4\"}"
 					] );
 				} );
 
@@ -316,14 +336,14 @@ describe( "Observer", function() {
 
 			describe( "on hosted started", function() {
 				before( function( done ) {
-					processhost.emit( "hosted.started", { yay: ":D", version: "0.0.test" } );
+					processhost.emit( "hosted.started", info );
 					setTimeout( function() {
 						done();
 					}, 10 );
 				} );
 
 				it( "should update status last event", function() {
-					status.lastEvent.should.eql( { started: { version: "0.0.test" } } );
+					status.lastEvent.should.eql( { started: info } );
 				} );
 
 				it( "should record start", function() {
@@ -332,7 +352,7 @@ describe( "Observer", function() {
 
 				it( "should log info", function() {
 					log.entries.info.should.eql( [
-						"Started service: {\"yay\":\":D\",\"version\":\"0.0.test\"}"
+						"Started service: {\"owner\":\"me\",\"project\":\"test\",\"branch\":\"master\",\"version\":\"0.1.0\",\"slug\":\"a1b2c3d4\"}"
 					] );
 				} );
 
@@ -435,13 +455,17 @@ describe( "Observer", function() {
 				} );
 
 				it( "should update status last event", function() {
-					status.lastEvent.should.eql( { failed: {
-						branch: "branch",
-						owner: "owner",
-						project: "project",
-						slug: "a1b2c3d4",
-						version: "0.0.test"
-					} } );
+					status.lastEvent.should.eql( {
+						failed: {
+							install: {
+								branch: "branch",
+								owner: "owner",
+								project: "project",
+								slug: "a1b2c3d4",
+								version: "0.0.test"
+							}
+						}
+					} );
 				} );
 
 				it( "should log error", function() {

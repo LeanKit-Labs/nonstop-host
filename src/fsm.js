@@ -35,7 +35,9 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 
 		reset: function( newConfig ) {
 			processhost.stop();
-			packages.updateConfig( newConfig );
+			if( newConfig ) {
+				packages.updateConfig( newConfig );
+			}
 			packages.reset();
 			server.reset();
 			this.emit( "reconfigured", config.filter.toHash() );
@@ -174,7 +176,8 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 					this.transition( "starting" );
 				},
 				"preboot.failed": function( err ) {
-					this.emit( "preboot.error", { version: packages.state.current.installedVersion, error: err } );
+					var error = _.merge( {}, packages.state.current.installedInfo, { error: err } );
+					this.emit( "preboot.error", error );
 					this.onServiceFailure();
 				},
 				installed: function() {
@@ -201,7 +204,6 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 			},
 			running: {
 				_onEnter: function() {
-					var current = packages.state.current;
 					this.emit( "running", packages.state.current.installedInfo );
 					this.clearFailsafe();
 				},

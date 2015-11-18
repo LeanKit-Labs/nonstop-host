@@ -1,0 +1,16 @@
+{
+    "index": {
+      "host": "localhost",
+      "api": "/api",
+      "port": 4444,
+      "token": "b5edb081-6500-4290-aadb-f430cdc2e578"
+    },
+    "package": {
+      "branch": "master",
+      "project": "test",
+      "owner": "anonymous"
+    },
+    "timeouts": {
+      "waiting": 60000
+    }
+}

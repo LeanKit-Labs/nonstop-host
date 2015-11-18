@@ -108,13 +108,15 @@ var notifications = {
 		log.error( "Service failed past allowed tolerance: %j", info );
 	},
 	"hosted.started": function( info ) {
+		var summary = summarize( info );
 		state.recordStart( info );
-		state.lastEvent = { started: summarize( info ) };
+		state.lastEvent = { started: summary };
 		log.info( "Started service: %j", info );
 	},
 	installed: function( info ) {
 		var summary = summarize( info );
 		state.lastEvent = { installed: summary };
+		state.latestInstall = summary;
 		log.info( "Installed '%s' successfully", info.file );
 	},
 	installing: function( info ) {
@@ -164,6 +166,7 @@ var notifications = {
 	running: function( info ) {
 		var summary = summarize( info );
 		state.activity = { running: summary };
+		state.lastRun = summary;
 		log.info( "Running version '%s'", info.version );
 	},
 	"running.error": function( info ) {

@@ -8,6 +8,7 @@ var path = require( "path" );
 var fsm = require( "./fsm" );
 var packagesFn = require( "./packages" );
 var serverFn = require( "./serverFsm" );
+var controlFn = require( "./control" );
 var registryFn = require( "./registration" );
 var postal = require( "postal" );
 var notifications = postal.channel( "notifications" );
@@ -42,7 +43,9 @@ module.exports = function( customConfig ) {
 	} );
 
 	var main = fsm( config, server, packages, processhost, drudgeon, fs );
-	fount.register( "control", main );
+	var control = controlFn( config, main );
+	fount.register( "fsm", main );
+	fount.register( "control", control );
 	fount.register( "status", status );
 	fount.register( "config", config );
 	fount.register( "packages", packages );

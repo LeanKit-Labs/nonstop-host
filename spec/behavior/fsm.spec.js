@@ -53,7 +53,11 @@ describe( "FSM", function() {
 		loadBootFile: _.noop,
 		ignoreVersion: _.noop,
 		reset: _.noop,
-		updateConfig: _.noop
+		updateConfig: _.noop,
+		state: {
+			current: {},
+			latest: {}
+		}
 	};
 
 	var processhost = {
@@ -129,11 +133,7 @@ describe( "FSM", function() {
 		describe( "when next step is download (no downloads or installs)", function() {
 			var lastState, serverMock;
 			before( function( done ) {
-				pack.state = {
-					current: {
-						installedVersion: "0.1.0"
-					}
-				};
+				pack.state.current.installedVersion = "0.1.0";
 				packMock = sinon.mock( pack );
 				var initialize = packMock.expects( "initialize" );
 				var loadBootFile = packMock.expects( "loadBootFile" );
@@ -177,11 +177,7 @@ describe( "FSM", function() {
 		describe( "when next step is install (local download, not installed yet)", function() {
 			var lastState, serverMock;
 			before( function( done ) {
-				pack.state = {
-					current: {
-						installedVersion: "0.1.0"
-					}
-				};
+				pack.state.current.installedVersion = "0.1.0";
 				packMock = sinon.mock( pack );
 				var initialize = packMock.expects( "initialize" );
 				var loadBootFile = packMock.expects( "loadBootFile" );
@@ -253,10 +249,13 @@ describe( "FSM", function() {
 						installedInfo: {
 							owner: "me",
 							project: "test",
-							branch: "master"
+							branch: "master",
+							version: "0.1.0",
+							slug: "a1b2c3d4"
 						},
 						slug: "a1b2c3d4"
-					}
+					},
+					latest: {}
 				};
 
 				runner = { run: _.noop };
@@ -320,11 +319,9 @@ describe( "FSM", function() {
 			it( "should provide package info on event", function() {
 				running.should.eql(
 					{
-						detail: {
-							owner: "me",
-							project: "test",
-							branch: "master"
-						},
+						owner: "me",
+						project: "test",
+						branch: "master",
 						slug: "a1b2c3d4",
 						version: "0.1.0"
 					}
@@ -351,8 +348,15 @@ describe( "FSM", function() {
 		var lastState, failure;
 		before( function( done ) {
 			pack.state = {
-				current: {
-					installedVersion: "0.1.0"
+				current: {},
+				latest: {
+					install: {
+						owner: "me",
+						project: "test",
+						branch: "master",
+						version: "0.1.0",
+						slug: "a1b2c3d4"
+					}
 				}
 			};
 			packMock = sinon.mock( pack );
@@ -382,7 +386,11 @@ describe( "FSM", function() {
 
 		it( "should emit bootfile.error with error", function() {
 			failure.should.eql( {
+				owner: "me",
+				project: "test",
+				branch: "master",
 				version: "0.1.0",
+				slug: "a1b2c3d4",
 				error: new Error( "Ain't no bootfile. Ain't never gonna be none." )
 			} );
 		} );
@@ -421,15 +429,17 @@ describe( "FSM", function() {
 
 			pack.state = {
 				current: {
-					installedPath: installedPath,
 					installedVersion: "0.1.0",
+					installedPath: installedPath,
 					installedInfo: {
 						owner: "me",
 						project: "test",
-						branch: "master"
-					},
-					slug: "a1b2c3d4"
-				}
+						branch: "master",
+						version: "0.1.0",
+						slug: "a1b2c3d4"
+					}
+				},
+				latest: {}
 			};
 
 			packMock = sinon.mock( pack );
@@ -472,7 +482,11 @@ describe( "FSM", function() {
 
 		it( "should emit preboot.error with error", function() {
 			failure.should.eql( {
+				owner: "me",
+				project: "test",
+				branch: "master",
 				version: "0.1.0",
+				slug: "a1b2c3d4",
 				error: new Error( "Preboot failed so hard. So. Hard." )
 			} );
 		} );
@@ -511,7 +525,23 @@ describe( "FSM", function() {
 			pack.state = {
 				current: {
 					installedPath: installedPath,
-					installedVersion: "0.1.0"
+					installedVersion: "0.1.0",
+					installedInfo: {
+						owner: "me",
+						project: "test",
+						branch: "master",
+						version: "0.1.0",
+						slug: "a1b2c3d4"
+					}
+				},
+				latest: {
+					installed: {
+						owner: "me",
+						project: "test",
+						branch: "master",
+						version: "0.1.0",
+						slug: "a1b2c3d4"
+					}
 				}
 			};
 
@@ -546,7 +576,11 @@ describe( "FSM", function() {
 
 		it( "should emit bootfile.error with error", function() {
 			failure.should.eql( {
+				owner: "me",
+				project: "test",
+				branch: "master",
 				version: "0.1.0",
+				slug: "a1b2c3d4",
 				error: new Error( "nope." )
 			} );
 		} );
@@ -567,9 +601,16 @@ describe( "FSM", function() {
 			pack.state = {
 				current: {
 					installedVersion: "0.1.0",
-					installedInfo: {},
+					installedInfo: {
+						owner: "me",
+						project: "test",
+						branch: "master",
+						version: "0.1.0",
+						slug: "a1b2c3d4"
+					},
 					slug: "abcd1234"
-				}
+				},
+				latest: {}
 			};
 			packMock = sinon.mock( pack );
 			var initialize = packMock.expects( "initialize" );
@@ -606,7 +647,11 @@ describe( "FSM", function() {
 
 		it( "should emit running.error with error", function() {
 			failure.should.eql( {
+				owner: "me",
+				project: "test",
+				branch: "master",
 				version: "0.1.0",
+				slug: "a1b2c3d4",
 				error: new Error( "nope." )
 			} );
 		} );

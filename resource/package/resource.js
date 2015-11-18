@@ -8,7 +8,6 @@ module.exports = function( host, config, server ) {
 				method: "post",
 				handle: function( envelope ) {
 					var info = envelope.data;
-					console.log( "Dat webhook, tho", info );
 					var compatible = info.package === config.package.package &&
 						info.owner === config.package.owner &&
 						info.branch === config.package.branch;
