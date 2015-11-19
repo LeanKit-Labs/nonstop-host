@@ -153,7 +153,7 @@ var notifications = {
 		log.error( "Preboot for version '%s' failed with error: %j", info.version, info.error );
 	},
 	reconfigured: function( info ) {
-		state.updateStatus( {
+		state.update( {
 			state: {
 				project: info.project,
 				owner: info.owner,
@@ -221,13 +221,16 @@ function handleEvent( topic, control, processhost, server, info ) {
 }
 
 function summarize( info ) {
-	return {
-		branch: info.branch,
-		owner: info.owner,
-		project: info.project,
-		slug: info.slug,
-		version: info.version
-	};
+	if( info ) {
+		return {
+			branch: info.branch,
+			owner: info.owner,
+			project: info.project,
+			slug: info.slug,
+			version: info.version
+		};
+	}
+	return {};
 }
 
 function updateActivity( topic, control, processhost, server, info ) {
