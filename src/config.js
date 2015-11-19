@@ -38,7 +38,8 @@ function getDefaults() {
 				public: 9090
 			},
 			failures: 1,
-			tolerance: 5000
+			tolerance: 5000,
+			autoRollback: true
 		},
 		logging: {
 			stdOut: {

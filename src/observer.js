@@ -221,7 +221,7 @@ function handleEvent( topic, control, processhost, server, info ) {
 }
 
 function summarize( info ) {
-	if( info ) {
+	if ( info ) {
 		return {
 			branch: info.branch,
 			owner: info.owner,

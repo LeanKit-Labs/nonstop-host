@@ -1472,7 +1472,7 @@ describe( "Packages", function() {
 	} );
 
 	describe( "when updating configuration", function() {
-		var packages, indexMock, newConfig, merged, control;
+		var packages, newConfig, control;
 		before( function() {
 			var cloned = _.clone( config );
 			control = controlFn( config, { reset: _.noop } );

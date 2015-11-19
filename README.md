@@ -43,7 +43,8 @@ Defaults are shown here. The `index` property provides information necessary to 
         "public": 9090
       },
       "tolerance": 5000,
-      "failures": 1
+      "failures": 1,
+      "autoRollback": true
     },
     "logging": {
       "stdOut": {
@@ -103,6 +104,7 @@ Defaults are shown here. The `index` property provides information necessary to 
 | | SERVICE_PORT_PUBLIC | `9090` |
 | | SERVICE_FAILURES | `1` |
 | | SERVICE_TOLERANCE | `5000` |
+| | SERVICE__AUTO_ROLLBACK | `true` |
 | __logging__ | | |
 "rollerpunk"
 | | ROLLERPUNK_LEVEL | `0` |

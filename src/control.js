@@ -14,7 +14,8 @@ var lookup = {
 	version: "package",
 	releasOnly: "package",
 	failures: "service",
-	tolerance: "service"
+	tolerance: "service",
+	autoRollback: "service"
 };
 
 var validCommands = [ "start", "stop", "reset" ];
@@ -40,17 +41,17 @@ function change( config, sectionName, section, op ) {
 }
 
 function configure( config, fsm, changeSet ) {
-		notifications.publish( "configuration.changed", {
+	notifications.publish( "configuration.changed", {
 			original: config,
 			changes: changeSet
 		} );
-		_.each( changeSet, function( op ) {
+	_.each( changeSet, function( op ) {
 			var sectionName = lookup[ op.field ];
 			var section = config[ sectionName ];
 			if ( section ) {
-				if( op.field === "version" && op.value ) {
+				if ( op.field === "version" && op.value ) {
 					var parts = op.value.split( "-" );
-					if( parts.length > 1 ) {
+					if ( parts.length > 1 ) {
 						var versionOp = { op: op.op, field: "version", value: parts[ 0 ] };
 						var buildOp = { op: op.op, field: "build", value: parts[ 1 ] };
 						change( config, sectionName, section, versionOp );
@@ -65,7 +66,16 @@ function configure( config, fsm, changeSet ) {
 				console.log( "No configuration section found for field", op.field );
 			}
 		} );
-		fsm.reset( config );
+	process.env.PACKAGE_OWNER = config.package.owner;
+	process.env.PACKAGE_BRANCH = config.package.branch;
+	process.env.PACKAGE_PROJECT = config.package.project;
+	process.env.PACKAGE_VERSION = config.package.version;
+	process.env.PACKAGE_BUILD = config.package.build;
+	process.env.PACKAGE__RELEASE_ONLY = config.package.releaseOnly;
+	process.env.SERVICE_TOLERANCE = config.service.tolerance;
+	process.env.SERVICE_FAILURES = config.service.failures;
+	process.env.SERVICE__AUTO_ROLLBACK = config.service.autoRollback;
+	fsm.reset( config );
 }
 
 function sendCommand( config, fsm, command ) {

@@ -596,73 +596,150 @@ describe( "FSM", function() {
 	} );
 
 	describe( "when running and hosted service fails", function() {
-		var lastState, failure;
-		before( function( done ) {
-			pack.state = {
-				current: {
-					installedVersion: "0.1.0",
-					installedInfo: {
-						owner: "me",
-						project: "test",
-						branch: "master",
-						version: "0.1.0",
-						slug: "a1b2c3d4"
+		describe( "and autoRollback is enabled", function() {
+			var lastState, failure;
+			before( function( done ) {
+				pack.state = {
+					current: {
+						installedVersion: "0.1.0",
+						installedInfo: {
+							owner: "me",
+							project: "test",
+							branch: "master",
+							version: "0.1.0",
+							slug: "a1b2c3d4"
+						},
+						slug: "abcd1234"
 					},
-					slug: "abcd1234"
-				},
-				latest: {}
-			};
-			packMock = sinon.mock( pack );
-			var initialize = packMock.expects( "initialize" );
-			packMock.expects( "ignoreVersion" ).once();
-			initialize.twice().returns( { then: _.noop } );
+					latest: {}
+				};
+				packMock = sinon.mock( pack );
+				var initialize = packMock.expects( "initialize" );
+				packMock.expects( "ignoreVersion" ).once();
+				initialize.twice().returns( { then: _.noop } );
 
-			fsm = fsmFn( config, server, pack, processhost, {} );
-			processhost.on( "hosted.failed", function( err ) {
-				fsm.handle( "hosted.failed", err );
+				fsm = fsmFn( config, server, pack, processhost, {} );
+				processhost.on( "hosted.failed", function( err ) {
+					fsm.handle( "hosted.failed", err );
+				} );
+				fsm.transition( "running" );
+				var initializingHandle, failedHandle;
+
+				failedHandle = fsm.on( "running.error", function( details ) {
+					failure = details;
+					fsm.off( failedHandle );
+				} );
+
+				initializingHandle = fsm.on( "initializing", function() {
+					lastState = fsm.state;
+					fsm.off( initializingHandle );
+					process.nextTick( function() {
+						fsm.stop();
+						done();
+					} );
+				} );
+
+				processhost.fail( "hosted", new Error( "nope." ) );
 			} );
-			fsm.transition( "running" );
-			var initializingHandle, failedHandle;
 
-			failedHandle = fsm.on( "running.error", function( details ) {
-				failure = details;
-				fsm.off( failedHandle );
+			it( "should reinitialize after failure", function() {
+				lastState.should.equal( "initializing" );
 			} );
 
-			initializingHandle = fsm.on( "initializing", function() {
-				lastState = fsm.state;
-				fsm.off( initializingHandle );
-				process.nextTick( function() {
-					fsm.stop();
-					done();
+			it( "should emit running.error with error", function() {
+				failure.should.eql( {
+					owner: "me",
+					project: "test",
+					branch: "master",
+					version: "0.1.0",
+					slug: "a1b2c3d4",
+					error: new Error( "nope." )
 				} );
 			} );
 
-			processhost.fail( "hosted", new Error( "nope." ) );
-		} );
+			it( "should call packages initialize twice and version failed once", function() {
+				packMock.verify();
+			} );
 
-		it( "should reinitialize after failure", function() {
-			lastState.should.equal( "initializing" );
-		} );
-
-		it( "should emit running.error with error", function() {
-			failure.should.eql( {
-				owner: "me",
-				project: "test",
-				branch: "master",
-				version: "0.1.0",
-				slug: "a1b2c3d4",
-				error: new Error( "nope." )
+			after( function() {
+				packMock.restore();
+				processhost.clear();
 			} );
 		} );
 
-		it( "should call packages initialize twice and version failed once", function() {
-			packMock.verify();
-		} );
+		describe( "and autoRollback is disabled", function() {
+			var lastState, failure;
+			before( function( done ) {
+				pack.state = {
+					current: {
+						installedVersion: "0.1.0",
+						installedInfo: {
+							owner: "me",
+							project: "test",
+							branch: "master",
+							version: "0.1.0",
+							slug: "a1b2c3d4"
+						},
+						slug: "abcd1234"
+					},
+					latest: {}
+				};
+				config.service.autoRollback = false;
+				packMock = sinon.mock( pack );
+				packMock.expects( "initialize" )
+					.returns( { then: _.noop } );
+				packMock.expects( "loadBootFile" )
+					.returns( { then: _.noop } );
+				packMock.expects( "ignoreVersion" ).never();
 
-		after( function() {
-			packMock.restore();
-			processhost.clear();
+				fsm = fsmFn( config, server, pack, processhost, {} );
+				processhost.on( "hosted.failed", function( err ) {
+					fsm.handle( "hosted.failed", err );
+				} );
+				fsm.transition( "running" );
+				var loadingHandle, failedHandle;
+
+				failedHandle = fsm.on( "running.error", function( details ) {
+					failure = details;
+					fsm.off( failedHandle );
+				} );
+
+				loadingHandle = fsm.on( "loading", function() {
+					lastState = fsm.state;
+					fsm.off( loadingHandle );
+					process.nextTick( function() {
+						fsm.stop();
+						done();
+					} );
+				} );
+
+				processhost.fail( "hosted", new Error( "nope." ) );
+			} );
+
+			it( "should re-load after failure", function() {
+				lastState.should.equal( "loading" );
+			} );
+
+			it( "should emit running.error with error", function() {
+				failure.should.eql( {
+					owner: "me",
+					project: "test",
+					branch: "master",
+					version: "0.1.0",
+					slug: "a1b2c3d4",
+					error: new Error( "nope." )
+				} );
+			} );
+
+			it( "should call packages initialize twice and version failed once", function() {
+				packMock.verify();
+			} );
+
+			after( function() {
+				packMock.restore();
+				processhost.clear();
+				config.service.autoRollback = true;
+			} );
 		} );
 	} );
 

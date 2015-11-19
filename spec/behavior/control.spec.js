@@ -5,7 +5,7 @@ var controlFn = require( "../../src/control" );
 var fsm = {
 	reset: _.noop,
 	start: _.noop,
-	stop: _.noop,
+	stop: _.noop
 };
 
 function getConfig() {
@@ -83,7 +83,7 @@ describe( "Control", function() {
 						.once();
 					control = controlFn( config, fsm );
 					control.configure( [
-						{ op: "remove", field: "version" },
+						{ op: "remove", field: "version" }
 					] );
 				} );
 

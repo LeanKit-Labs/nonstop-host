@@ -29,13 +29,17 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 		},
 
 		onServiceFailure: function() {
-			packages.ignoreVersion( packages.state.current.installedVersion );
-			this.transition( "initializing" );
+			if ( config.service.autoRollback ) {
+				packages.ignoreVersion( packages.state.current.installedVersion );
+				this.transition( "initializing" );
+			} else {
+				this.transition( "loading" );
+			}
 		},
 
 		reset: function( newConfig ) {
 			processhost.stop();
-			if( newConfig ) {
+			if ( newConfig ) {
 				packages.updateConfig( newConfig );
 			} else {
 				packages.reset();
