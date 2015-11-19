@@ -1,3 +1,5 @@
+var _ = require( "lodash" );
+
 function getStatus( status ) {
 	return {
 		uptime: {
@@ -19,6 +21,20 @@ module.exports = function( host, config, status ) {
 	return {
 		name: "status",
 		actions: {
+			environment: {
+				url: "/environment",
+				method: "get",
+				handle: function() {
+					return _.reduce( process.env, function( acc, value, key ) {
+						if( !/pass/ig.test( key ) ) {
+							acc[ key ] = value;
+						} else {
+							acc[ key ] = "redacted";
+						}
+						return acc;
+					}, {} );
+				}
+			},
 			self: {
 				url: "/",
 				method: "get",
