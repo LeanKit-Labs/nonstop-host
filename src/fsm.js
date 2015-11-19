@@ -37,8 +37,9 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 			processhost.stop();
 			if( newConfig ) {
 				packages.updateConfig( newConfig );
+			} else {
+				packages.reset();
 			}
-			packages.reset();
 			server.reset();
 			this.emit( "reconfigured", config.filter.toHash() );
 			this.transition( "initializing" );

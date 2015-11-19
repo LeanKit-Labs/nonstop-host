@@ -36,6 +36,7 @@ describe( "Control", function() {
 				control.configure( [
 					{ op: "change", field: "branch", value: "develop" },
 					{ op: "change", field: "version", value: "0.1.1" },
+					{ op: "change", field: "owner", value: "person" }
 				] );
 			} );
 
@@ -48,7 +49,7 @@ describe( "Control", function() {
 					os: {},
 					osName: "any",
 					osVersion: "any",
-					owner: "me",
+					owner: "person",
 					platform: os.platform(),
 					project: "test",
 					releaseOnly: false,
@@ -62,7 +63,7 @@ describe( "Control", function() {
 					branch: "develop",
 					osName: "any",
 					osVersion: "any",
-					owner: "me",
+					owner: "person",
 					platform: os.platform(),
 					project: "test",
 					version: "0.1.1"
@@ -95,7 +96,7 @@ describe( "Control", function() {
 						os: {},
 						osName: "any",
 						osVersion: "any",
-						owner: "me",
+						owner: "person",
 						platform: os.platform(),
 						project: "test",
 						releaseOnly: false,
@@ -109,7 +110,7 @@ describe( "Control", function() {
 						branch: "develop",
 						osName: "any",
 						osVersion: "any",
-						owner: "me",
+						owner: "person",
 						platform: os.platform(),
 						project: "test"
 					} );
@@ -120,7 +121,7 @@ describe( "Control", function() {
 				} );
 			} );
 
-			describe( "then chaning version with build included", function() {
+			describe( "then chaning owner and version with build included", function() {
 				var fsmMock;
 				before( function() {
 					fsmMock = sinon.mock( fsm );
@@ -130,6 +131,7 @@ describe( "Control", function() {
 					control = controlFn( config, fsm );
 					control.configure( [
 						{ op: "change", field: "version", value: "0.1.1-10" },
+						{ op: "change", field: "owner", value: "you" }
 					] );
 				} );
 
@@ -142,7 +144,7 @@ describe( "Control", function() {
 						os: {},
 						osName: "any",
 						osVersion: "any",
-						owner: "me",
+						owner: "you",
 						platform: os.platform(),
 						project: "test",
 						releaseOnly: false,
@@ -157,7 +159,7 @@ describe( "Control", function() {
 						build: "10",
 						osName: "any",
 						osVersion: "any",
-						owner: "me",
+						owner: "you",
 						platform: os.platform(),
 						project: "test",
 						version: "0.1.1"

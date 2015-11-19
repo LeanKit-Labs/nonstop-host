@@ -1,5 +1,6 @@
 require( "../setup" );
-var config = require( "../../src/config.js" )( {
+var controlFn = require( "../../src/control" );
+var config = require( "../../src/config" )( {
 	index: {
 		frequency: 100
 	},
@@ -1471,9 +1472,10 @@ describe( "Packages", function() {
 	} );
 
 	describe( "when updating configuration", function() {
-		var packages, indexMock, newConfig;
+		var packages, indexMock, newConfig, merged, control;
 		before( function() {
 			var cloned = _.clone( config );
+			control = controlFn( config, { reset: _.noop } );
 			packages = pkgFn( cloned );
 			newConfig = {
 				package: {
@@ -1482,19 +1484,17 @@ describe( "Packages", function() {
 					version: "0.2.0"
 				}
 			};
-
-			var merged = _.merge( cloned, newConfig );
-
-			indexMock = sinon.mock( indexClientApi );
-			indexMock.expects( "update" )
-				.withArgs( merged )
-				.returns();
-
+			control.configure( [
+				{ op: "change", field: "owner", value: "you" },
+				{ op: "change", field: "branch", value: "develop" },
+				{ op: "change", field: "version", value: "0.2.0" },
+			] );
 			packages.updateConfig( newConfig );
 		} );
 
-		it( "should update index", function() {
-			indexMock.verify();
+		it( "should change package state", function() {
+			packages.state.owner.should.eql( "you" );
+			packages.state.branch.should.eql( "develop" );
 		} );
 	} );
 } );

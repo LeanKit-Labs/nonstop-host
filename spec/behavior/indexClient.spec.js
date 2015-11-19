@@ -16,6 +16,7 @@ describe( "Index Client", function() {
 		before( function() {
 			newConfig = {
 					package: {
+						owner: "derp",
 						branch: "develop"
 					}
 				};

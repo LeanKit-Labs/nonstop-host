@@ -288,9 +288,7 @@ function setLatestInstall( config, state, info ) {
 	state.latest.slug = info.slug || info.commit;
 }
 
-function updateConfig( config, state, index, newConfig ) {
-	_.merge( config, newConfig );
-	index.update( config );
+function updateConfig( config, state ) {
 	resetState( config, state );
 }
 
@@ -318,6 +316,6 @@ module.exports = function( config ) {
 		setLatestDownload: setLatestDownload.bind( null, config, state ),
 		state: state,
 		reset: resetState.bind( null, config, state ),
-		updateConfig: updateConfig.bind( null, config, state, index )
+		updateConfig: updateConfig.bind( null, config, state )
 	};
 };

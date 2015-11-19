@@ -677,7 +677,6 @@ describe( "FSM", function() {
 			packagesMock = sinon.mock( pack );
 			packagesMock.expects( "updateConfig" )
 				.withArgs( newConfig );
-			packagesMock.expects( "reset" );
 			packagesMock.expects( "initialize" )
 				.returns( { then: _.noop } );
 
