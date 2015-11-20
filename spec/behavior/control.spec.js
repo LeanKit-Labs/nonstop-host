@@ -172,4 +172,26 @@ describe( "Control", function() {
 			} );
 		} );
 	} );
+
+	describe( "when changing environment", function() {
+		var config, fsmMock, fsm, result;
+		before( function() {
+			process.env.TO_REMOVE="remove this";
+			process.env.TO_CHANGE="change this";
+			config = getConfig();
+			fsmMock = sinon.mock( fsm );
+			control = controlFn( config, fsm );
+			result = control.setEnvironment( [
+				{ op: "change", variable: "TO_CHANGE", value: "new value" },
+				{ op: "remove", variable: "TO_REMOVE" }
+			] );
+		} );
+
+		it( "should have changed a variable and removed another", function() {
+			result.should.eql( {
+				TO_CHANGE: "new value",
+				removed: [ "TO_REMOVE" ]
+			} );
+		} );
+	} );
 } );

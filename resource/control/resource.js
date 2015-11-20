@@ -40,7 +40,20 @@ module.exports = function( host, control, config ) {
 						}
 					};
 				}
-			}
+			},
+			environment: {
+				url: "/environment",
+				method: "patch",
+				handle: function( envelope ) {
+					var changeSet = envelope.data;
+					if ( changeSet && _.isArray( changeSet.data ) ) {
+						changeSet = changeSet.data;
+					}
+					return {
+						data: control.setEnvironment( changeSet )
+					};
+				}
+			},
 		}
 	};
 };
