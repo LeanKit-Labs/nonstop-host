@@ -50,7 +50,7 @@ module.exports = function( customConfig ) {
 	fount.register( "config", config );
 	fount.register( "packages", packages );
 	fount.register( "server", server );
-	observe( main, server, processhost );
+	observe( main, server, processhost, packages );
 	server.start();
 
 	var host = hyped.createHost( autohost, {

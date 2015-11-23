@@ -215,7 +215,10 @@ function notify( topic, info ) {
 	}
 }
 
-function handleEvent( topic, control, processhost, server, info ) {
+function handleEvent( topic, control, processhost, server, packages, info ) {
+	if( !info || !info.version ) {
+		info = _.merge( {}, info, packages.state.current.installedInfo );
+	}
 	notify( topic, info );
 	control.handle( topic, info );
 }
@@ -233,7 +236,10 @@ function summarize( info ) {
 	return {};
 }
 
-function updateActivity( topic, control, processhost, server, info ) {
+function updateActivity( topic, control, processhost, server, packages, info ) {
+	if( !info || !info.version ) {
+		info = _.merge( {}, info, packages.state.current.installedInfo );
+	}
 	notify( topic, info );
 	control.handle( topic, info );
 }
@@ -242,17 +248,17 @@ function updateStatus( topic, info ) {
 	notify( topic, info );
 }
 
-function setupSubscriptions( control, server, processhost ) {
+function setupSubscriptions( control, server, processhost, packages ) {
 	_.each( serverActivities, function( topic ) {
-		server.on( topic, updateActivity.bind( null, topic, control, processhost, server ) );
+		server.on( topic, updateActivity.bind( null, topic, control, processhost, server, packages ) );
 	} );
 
 	_.each( serverEvents, function( topic ) {
-		server.on( topic, handleEvent.bind( null, topic, control, processhost, server ) );
+		server.on( topic, handleEvent.bind( null, topic, control, processhost, server, packages ) );
 	} );
 
 	_.each( hostEvents, function( topic ) {
-		processhost.on( topic, handleEvent.bind( null, topic, control, processhost, server ) );
+		processhost.on( topic, handleEvent.bind( null, topic, control, processhost, server, packages ) );
 	} );
 
 	_.each( controlEvents, function( topic ) {
@@ -260,8 +266,8 @@ function setupSubscriptions( control, server, processhost ) {
 	} );
 }
 
-function create( control, server, processhost ) {
-	setupSubscriptions( control, server, processhost );
+function create( control, server, processhost, packages ) {
+	setupSubscriptions( control, server, processhost, packages );
 }
 
 module.exports = create;

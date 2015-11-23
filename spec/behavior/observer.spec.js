@@ -39,6 +39,13 @@ describe( "Observer", function() {
 		var control = emitter();
 		var processhost = emitter();
 		var server = emitter();
+		var packages = {
+			state: {
+				current: {
+					packageInfo: info
+				}
+			}
+		};
 		var status;
 		var observer;
 		var log;
@@ -51,7 +58,7 @@ describe( "Observer", function() {
 					return log;
 				},
 				"./status": status
-			} )( control, server, processhost );
+			} )( control, server, processhost, packages );
 		} );
 
 		it( "should create subscriptions to all control event topics", function() {
