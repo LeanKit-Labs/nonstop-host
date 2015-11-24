@@ -11,6 +11,7 @@ var config = require( "../../src/config" )( {
 		files: "./downloads"
 	}
 } );
+var packLib = require( "nonstop-pack" );
 
 var bootFileApi = {
 
@@ -1207,7 +1208,7 @@ describe( "Packages", function() {
 	describe( "when installing", function() {
 		var fsMock, packMock, packages, package, packageInfo, installPath, versionedPath, installed;
 		before( function() {
-			package = "test~me~master~a123b456~0.1.0~1~linux~any~any~x64.tar.gz";
+			package = "/this/is/junk/test~me~master~a123b456~0.1.0~1~linux~any~any~x64.tar.gz";
 			packageInfo = {
 				owner: "me",
 				branch: "master",
@@ -1219,14 +1220,16 @@ describe( "Packages", function() {
 				architecture: "x64"
 			};
 
+			var actualInfo = packLib.parse( "", path.basename( package ) );
+
 			packages = pkgFn( config );
 			installPath = path.join( config.installs, "test-me-master" );
 			versionedPath = path.join( installPath, "0.1.0-1" );
 
 			packMock = sinon.mock( packApi );
 			packMock.expects( "parse" )
-				.withArgs( "", package )
-				.returns( packageInfo );
+				.withArgs( "", path.basename( package ) )
+				.returns( actualInfo );
 
 			packMock.expects( "unpack" )
 				.withArgs( package, versionedPath )
@@ -1240,6 +1243,10 @@ describe( "Packages", function() {
 				.then( function( result ) {
 					installed = result;
 				} );
+		} );
+
+		it( "should set installed correctly", function() {
+			return packages.state.current.installedInfo.should.partiallyEql( packageInfo );
 		} );
 
 		it( "should have called fs ensurePath", function() {

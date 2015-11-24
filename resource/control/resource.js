@@ -53,7 +53,7 @@ module.exports = function( host, control, config ) {
 						data: control.setEnvironment( changeSet )
 					};
 				}
-			},
+			}
 		}
 	};
 };

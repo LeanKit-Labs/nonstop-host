@@ -262,16 +262,13 @@ describe( "Observer", function() {
 
 			describe( "on download failed", function() {
 				before( function() {
-					server.emit( "download.failed", { version: "0.0.test", file: "test.tar.gz", error: { badThing: "some error" } } );
+					server.emit( "download.failed", { version: "0.0.test", file: "test.tar.gz", error: new Error( "some error" ) } );
 				} );
 
 				it( "should update status last event", function() {
-					status.lastEvent.should.eql( {
+					status.lastEvent.should.partiallyEql( {
 						failed: {
 							download: {
-								error: {
-									badThing: "some error"
-								},
 								file: "test.tar.gz",
 								version: "0.0.test"
 							}
@@ -281,7 +278,7 @@ describe( "Observer", function() {
 
 				it( "should log error", function() {
 					log.entries.error.should.eql( [
-						"Download of 'test.tar.gz' failed with error: {\"badThing\":\"some error\"}"
+						"Download of 'test.tar.gz' failed with Error: some error"
 					] );
 				} );
 
@@ -544,16 +541,16 @@ describe( "Observer", function() {
 
 			describe( "on preboot error", function() {
 				before( function() {
-					control.emit( "preboot.error", { version: "0.0.test", error: ";(" } );
+					control.emit( "preboot.error", { version: "0.0.test", error: new Error( ";(" ) } );
 				} );
 
 				it( "should update last event", function() {
-					status.lastEvent.should.eql( { failed: { preboot: { version: "0.0.test", error: ";(" } } } );
+					status.lastEvent.should.partiallyEql( { failed: { preboot: { version: "0.0.test" } } } );
 				} );
 
 				it( "should log error", function() {
 					log.entries.error.should.eql( [
-						"Preboot for version '0.0.test' failed with error: \";(\""
+						"Preboot for version '0.0.test' failed with Error: ;("
 					] );
 				} );
 

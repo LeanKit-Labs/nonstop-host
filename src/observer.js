@@ -89,7 +89,7 @@ var notifications = {
 	},
 	"download.failed": function( info ) {
 		state.lastEvent = { failed: { download: info } };
-		log.error( "Download of '%s' failed with error: %j", info.file, info.error );
+		log.error( "Download of '%s' failed with %s", info.file, info.error );
 	},
 	hasLatest: function() {
 		log.info( "Latest available version is already installed" );
@@ -150,7 +150,7 @@ var notifications = {
 	},
 	"preboot.error": function( info ) {
 		state.lastEvent = { failed: { preboot: info } };
-		log.error( "Preboot for version '%s' failed with error: %j", info.version, info.error );
+		log.error( "Preboot for version '%s' failed with %s", info.version, info.error );
 	},
 	reconfigured: function( info ) {
 		state.update( {
@@ -175,7 +175,7 @@ var notifications = {
 		state.update( {
 			lastFailure: summary
 		} );
-		log.error( "Running version '%s' failed with '%j'", info.version, info.error );
+		log.error( "Running version '%s' failed with '%s'", info.version, info.error );
 	},
 	"server.stopped": function() {
 		log.info( "Checks for updates have been stopped" );
@@ -216,7 +216,7 @@ function notify( topic, info ) {
 }
 
 function handleEvent( topic, control, processhost, server, packages, info ) {
-	if( !info || !info.version ) {
+	if ( !info || !info.version ) {
 		info = _.merge( {}, info, packages.state.current.installedInfo );
 	}
 	notify( topic, info );
@@ -237,7 +237,7 @@ function summarize( info ) {
 }
 
 function updateActivity( topic, control, processhost, server, packages, info ) {
-	if( !info || !info.version ) {
+	if ( !info || !info.version ) {
 		info = _.merge( {}, info, packages.state.current.installedInfo );
 	}
 	notify( topic, info );

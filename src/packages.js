@@ -207,7 +207,8 @@ function initializeState( config, state, index ) {
 }
 
 function install( config, state, package ) {
-	var info = pack.parse( "", package );
+	var info = pack.parse( "", path.basename( package ) );
+	//var info = pack.parse( "", package );
 	var installPath = getInstallPath( config, info.version );
 	fs.ensurePath( path.dirname( installPath ) );
 	return pack.unpack( package, installPath )

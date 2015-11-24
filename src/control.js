@@ -91,10 +91,10 @@ function sendCommand( config, fsm, command ) {
 
 function setEnvironment( config, changeSet ) {
 	return _.reduce( changeSet, function( acc, op ) {
-		if( op.op === "change" ) {
+		if ( op.op === "change" ) {
 			process.env[ op.variable ] = op.value;
 			acc[ op.variable ] = op.value;
-		} else if( op.op === "remove" ) {
+		} else if ( op.op === "remove" ) {
 			delete process.env[ op.variable ];
 			acc.removed = acc.removed || [];
 			acc.removed.push( op.variable );
