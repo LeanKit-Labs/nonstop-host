@@ -1,5 +1,8 @@
 ## 1.0.*
 
+### 1.0.1
+Change autohost configuration to omit session.
+
 ### 1.0.0
 Rewrite and significant breaking changes in terms of APIs and events.
 

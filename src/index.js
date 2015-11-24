@@ -56,6 +56,7 @@ module.exports = function( customConfig ) {
 	var host = hyped.createHost( autohost, {
 		port: config.service.port.local,
 		fount: fount,
+		noSession: true,
 		resources: path.resolve( __dirname, "../resource" )
 	}, function() {
 		host.start();
