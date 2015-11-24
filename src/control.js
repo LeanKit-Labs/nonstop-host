@@ -12,7 +12,7 @@ var lookup = {
 	branch: "package",
 	build: "package",
 	version: "package",
-	releasOnly: "package",
+	releaseOnly: "package",
 	failures: "service",
 	tolerance: "service",
 	autoRollback: "service"
@@ -59,6 +59,9 @@ function configure( config, fsm, changeSet ) {
 					} else {
 						change( config, sectionName, section, op );
 					}
+				} else if ( op.field === "releaseOnly" ) {
+					change( config, sectionName, section, op );
+					delete section.build;
 				} else {
 					change( config, sectionName, section, op );
 				}

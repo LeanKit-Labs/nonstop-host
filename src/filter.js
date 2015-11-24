@@ -23,11 +23,18 @@ function createFilter( cfg ) {
 			return props[ k ]._val;
 		};
 	} );
+	props.releaseOnly = function( v ) {
+		if ( v ) {
+			props.build._val = null;
+		}
+		props.releaseOnly._val = v;
+	};
 	_.each( cfg, function( v, k ) {
 		if ( v && props[ k ] ) {
 			props[ k ]( v );
 		}
 	} );
+
 	props.toHash = function() {
 		return _.reduce( keys, function( acc, k ) {
 			var val = props[ k ]._val;
@@ -35,7 +42,7 @@ function createFilter( cfg ) {
 				acc[ k ] = val;
 			}
 			return acc;
-		}, {} );
+		}, { releaseOnly: props.releaseOnly._val || false } );
 	};
 	props.toString = function() {
 		var str = _.filter( _.map( keys, function( k ) {

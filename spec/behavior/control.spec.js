@@ -16,7 +16,8 @@ function getConfig() {
 		package: { // jshint ignore : line
 			branch: "master",
 			owner: "me",
-			project: "test"
+			project: "test",
+			build: 1
 		}
 	} );
 }
@@ -36,7 +37,8 @@ describe( "Control", function() {
 				control.configure( [
 					{ op: "change", field: "branch", value: "develop" },
 					{ op: "change", field: "version", value: "0.1.1" },
-					{ op: "change", field: "owner", value: "person" }
+					{ op: "change", field: "owner", value: "person" },
+					{ op: "change", field: "releaseOnly", value: true }
 				] );
 			} );
 
@@ -44,7 +46,6 @@ describe( "Control", function() {
 				config.package.should.eql( {
 					architecture: "x64",
 					branch: "develop",
-					build: undefined,
 					files: path.resolve( "./downloads" ),
 					os: {},
 					osName: "any",
@@ -52,7 +53,7 @@ describe( "Control", function() {
 					owner: "person",
 					platform: os.platform(),
 					project: "test",
-					releaseOnly: false,
+					releaseOnly: true,
 					version: "0.1.1"
 				} );
 			} );
@@ -66,6 +67,7 @@ describe( "Control", function() {
 					owner: "person",
 					platform: os.platform(),
 					project: "test",
+					releaseOnly: true,
 					version: "0.1.1"
 				} );
 			} );
@@ -83,7 +85,8 @@ describe( "Control", function() {
 						.once();
 					control = controlFn( config, fsm );
 					control.configure( [
-						{ op: "remove", field: "version" }
+						{ op: "remove", field: "version" },
+						{ op: "change", field: "releaseOnly", value: false }
 					] );
 				} );
 
@@ -91,7 +94,6 @@ describe( "Control", function() {
 					config.package.should.eql( {
 						architecture: "x64",
 						branch: "develop",
-						build: undefined,
 						files: path.resolve( "./downloads" ),
 						os: {},
 						osName: "any",
@@ -112,7 +114,8 @@ describe( "Control", function() {
 						osVersion: "any",
 						owner: "person",
 						platform: os.platform(),
-						project: "test"
+						project: "test",
+						releaseOnly: false
 					} );
 				} );
 
@@ -162,7 +165,8 @@ describe( "Control", function() {
 						owner: "you",
 						platform: os.platform(),
 						project: "test",
-						version: "0.1.1"
+						version: "0.1.1",
+						releaseOnly: false
 					} );
 				} );
 

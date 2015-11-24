@@ -106,7 +106,8 @@ describe( "Server FSM", function() {
 					osVersion: "any",
 					owner: "me",
 					platform: "darwin",
-					project: "test"
+					project: "test",
+					releaseOnly: false
 				} );
 			} );
 
