@@ -26,7 +26,7 @@ module.exports = function( host, config, status ) {
 				method: "get",
 				handle: function() {
 					return _.reduce( process.env, function( acc, value, key ) {
-						if ( !/pass/ig.test( key ) ) {
+						if ( !/(pass|token|secret)/ig.test( key ) ) {
 							acc[ key ] = value;
 						} else {
 							acc[ key ] = "redacted";
