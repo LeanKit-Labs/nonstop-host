@@ -8,11 +8,9 @@ module.exports = function( host, config, server ) {
 				method: "post",
 				handle: function( envelope ) {
 					var info = envelope.data;
-					var compatible = info.package === config.package.package &&
-						info.owner === config.package.owner &&
-						info.branch === config.package.branch;
+					var compatible = info.project === config.package.project;
 					if ( compatible ) {
-						server.checkAvailable( info );
+						server.checkForNew();
 					}
 					return { status: 200 };
 				}

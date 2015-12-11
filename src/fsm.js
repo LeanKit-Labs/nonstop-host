@@ -82,8 +82,11 @@ function createFsm( config, server, packages, processhost, drudgeon ) {
 			this.transition( "stopped" );
 		},
 
-		initialState: "initializing",
+		initialState: "uninitialized",
 		states: {
+			uninitialized: {
+
+			},
 			initializing: {
 				_onEnter: function() {
 					this.setFailsafe( config.timeouts.initializing );

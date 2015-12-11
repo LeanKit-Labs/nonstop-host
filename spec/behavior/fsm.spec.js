@@ -105,6 +105,7 @@ describe( "FSM", function() {
 				initialize.resolves( "wait" );
 
 				fsm = fsmFn( config, server, pack, processhost, {} );
+				fsm.start();
 				var waitingHandle;
 				waitingHandle = fsm.on( "waiting", function() {
 					// prevent the timeout in waiting from firing
@@ -144,6 +145,7 @@ describe( "FSM", function() {
 				serverMock.expects( "download" );
 
 				fsm = fsmFn( config, server, pack, processhost, {} );
+				fsm.start();
 				var loadingHandle;
 				loadingHandle = fsm.on( "loading", function() {
 					lastState = fsm.state;
@@ -189,6 +191,7 @@ describe( "FSM", function() {
 
 				var loadingHandle;
 				fsm = fsmFn( config, server, pack, processhost, {} );
+				fsm.start();
 				loadingHandle = fsm.on( "loading", function() {
 					lastState = fsm.state;
 					fsm.off( loadingHandle );
@@ -282,6 +285,7 @@ describe( "FSM", function() {
 				} );
 
 				fsm = fsmFn( config, server, pack, processhost, drudgeonMock );
+				fsm.start();
 				var loadingHandle, prebootingHandle, startingHandle, runningHandle;
 
 				loadingHandle = fsm.on( "loading", function( loadingInfo ) {
@@ -366,6 +370,7 @@ describe( "FSM", function() {
 			initialize.twice().returns( { then: _.noop } );
 			loadBootFile.rejects( new Error( "Ain't no bootfile. Ain't never gonna be none." ) );
 			fsm = fsmFn( config, server, pack, processhost, {} );
+			fsm.start();
 			fsm.transition( "loading" );
 			var initializingHandle, failedHandle;
 			failedHandle = fsm.on( "bootfile.error", function( details ) {
@@ -462,6 +467,7 @@ describe( "FSM", function() {
 				} ).returns( runner );
 
 			fsm = fsmFn( config, server, pack, processhost, drudgeonMock );
+			fsm.start();
 			fsm.transition( "loading" );
 			var initializingHandle, failedHandle;
 			failedHandle = fsm.on( "preboot.error", function( details ) {
@@ -552,6 +558,7 @@ describe( "FSM", function() {
 
 			fsm = fsmFn( config, server, pack, processhost, {} );
 			fsm.bootFile = bootFile;
+			fsm.start();
 			processhost.on( "hosted.failed", function( err ) {
 				fsm.handle( "hosted.failed", err );
 			} );
@@ -619,6 +626,7 @@ describe( "FSM", function() {
 				initialize.twice().returns( { then: _.noop } );
 
 				fsm = fsmFn( config, server, pack, processhost, {} );
+				fsm.start();
 				processhost.on( "hosted.failed", function( err ) {
 					fsm.handle( "hosted.failed", err );
 				} );
@@ -693,6 +701,7 @@ describe( "FSM", function() {
 				packMock.expects( "ignoreVersion" ).never();
 
 				fsm = fsmFn( config, server, pack, processhost, {} );
+				fsm.start();
 				processhost.on( "hosted.failed", function( err ) {
 					fsm.handle( "hosted.failed", err );
 				} );
