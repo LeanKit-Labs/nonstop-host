@@ -38,7 +38,6 @@ describe( "Registration", function() {
 								method: "post"
 							},
 							_links: {},
-							status: 201,
 							name: "test",
 							message: "Host test added successfully"
 						}, {
@@ -52,7 +51,7 @@ describe( "Registration", function() {
 								method: "post"
 							},
 							_links: {},
-							status: 201,
+							_status: 201,
 							id: "test-host:9090",
 							message: "Webhook test-host added successfully"
 						}, {
@@ -105,7 +104,7 @@ describe( "Registration", function() {
 								method: "post"
 							},
 							_links: {},
-							status: 201,
+							_status: 201,
 							name: "test",
 							message: "Host test added successfully"
 						} );
@@ -147,7 +146,6 @@ describe( "Registration", function() {
 							method: "post"
 						},
 						_links: {},
-						status: 201,
 						id: "test-host:9090",
 						message: "Webhook test-host added successfully"
 					}, {
@@ -198,7 +196,7 @@ describe( "Registration", function() {
 							href: "/nonstop/host",
 							method: "post"
 						},
-						status: 201,
+						_status: 201,
 						id: "test-host:9090",
 						message: "Webhook test-host added successfully",
 						_links: {}

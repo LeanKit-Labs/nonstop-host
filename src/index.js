@@ -51,7 +51,7 @@ module.exports = function( customConfig ) {
 	fount.register( "packages", packages );
 	fount.register( "server", server );
 	observe( main, server, processhost, packages );
-	server.start();
+	main.start();
 
 	var host = hyped.createHost( autohost, {
 		port: config.service.port.local,

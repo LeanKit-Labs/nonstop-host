@@ -67,7 +67,7 @@ var notifications = {
 		log.debug( "Checking for new version" );
 	},
 	configured: function( info ) {
-		state.updateStatus( {
+		state.update( {
 			state: {
 				project: info.project,
 				owner: info.owner,

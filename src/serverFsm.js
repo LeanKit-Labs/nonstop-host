@@ -123,6 +123,9 @@ function createFsm( config, packages ) {
 				"download.failed": function( err ) {
 					this.emit( "download.failed", _.merge( {}, this.newest, { error: err } ) );
 					this.transition( "waiting" );
+				},
+				check: function() {
+					this.deferUntilTransition();
 				}
 			},
 			installing: {
@@ -143,6 +146,9 @@ function createFsm( config, packages ) {
 					this.emit( "install.failed", _.merge( {}, this.newest, { error: err } ) );
 					packages.ignoreVersion( this.newest.version );
 					this.transition( "waiting" );
+				},
+				check: function() {
+					this.deferUntilTransition();
 				}
 			},
 			waiting: {

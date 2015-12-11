@@ -1,5 +1,9 @@
 ## 1.0.*
 
+### 1.0.2
+ * Bug fix - webhook callback was processing new packages that allowed it to update packages that don't match configuration
+ * Bug fix - initial configuration was not setting package details on status correctly
+
 ### 1.0.1
 Change autohost configuration to omit session.
 
